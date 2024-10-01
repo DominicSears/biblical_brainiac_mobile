@@ -1,5 +1,4 @@
 import { api } from "./axios";
-import * as SecureStorage from 'expo-secure-store';
 
 export const get = async (url: string): Promise<{data: any, status: number}> => {
 	let data, status;
@@ -7,7 +6,7 @@ export const get = async (url: string): Promise<{data: any, status: number}> => 
 	try {
 		const res = await api().get(url);
 
-		data = res.data;
+		data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
 		status = res.status;
 	} catch (e: any) {
 		console.log('e:',e);
@@ -42,10 +41,4 @@ export const post = async (url: string, postData?: any | undefined): Promise<{da
 	}
 
 	return { data, status };
-}
-
-export const getToken = async (): Promise<string | null> => {
-	const token = SecureStorage.getItemAsync('token');
-
-	return token;
 }

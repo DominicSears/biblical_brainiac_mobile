@@ -1,8 +1,11 @@
+import useAuth from '@/providers/authProvider';
 import axios, { Axios } from 'axios'
 import { router } from 'expo-router'
 import * as SecureStorage from 'expo-secure-store';
 
 export const api = (): Axios => {
+    const { updateAuth } = useAuth()
+
     const api = axios.create({
         withCredentials: true,
         baseURL: process.env.EXPO_PUBLIC_API_URL,
@@ -32,9 +35,14 @@ export const api = (): Axios => {
         (error: any) => {
           if (axios.isAxiosError(error)) {
             if ((error.response?.status ?? 500) === 401) {
-              // Redirect them
-              router.replace('/auth')
-              return Promise.reject(error)
+              // Remove auth and redirect them
+              SecureStorage.deleteItemAsync('token')
+                .finally(() => {
+                  updateAuth(null)
+                  router.replace('/auth')
+
+                  return Promise.reject(error)
+                })
             }
           }
     

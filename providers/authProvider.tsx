@@ -1,12 +1,13 @@
 import { api } from "@/lib/axios"
-import { getToken } from "@/lib/helpers"
 import { router } from "expo-router"
 import { createContext, useContext, useEffect, useState } from "react"
+import * as SecureStore from "expo-secure-store"
 
 export interface AuthProviderType {
 	user: any,
 	setUser: React.Dispatch<any>,
-	loading: boolean
+	loading: boolean,
+	updateAuth: (user: any) => void
 }
 
 export const useAuth = (): AuthProviderType => {
@@ -29,7 +30,7 @@ export const AuthProvider = ({ children, initialUser }: any) => {
 		let status, data
 
 		try {
-			const res = await api().get("/api/user")
+			const res = await api().get("/user")
 
 			data = res.data
 			status = res.status
@@ -43,22 +44,28 @@ export const AuthProvider = ({ children, initialUser }: any) => {
 		}
 	}
 
-	useEffect(() => {
-		getToken().then((token: string | null) => {
-			if (token && !user) {
-				console.info("needs user")
+	const updateAuth = (authUser: any) => {
+		setUser(authUser)
+	}
 
-				getUserData().then(() => {
-					setLoading(false)
-				})
-			} else {
-				router.replace("/")
-			}
-		})
+	useEffect(() => {
+		SecureStore.getItemAsync('token')
+			.then((token: string | null) => {
+
+				if (token && !user) {
+					console.info("needs user")
+
+					getUserData().then(() => {
+						setLoading(false)
+					})
+				} else {
+					router.replace("/")
+				}
+			})
 	}, [])
 
 	return (
-		<AuthContext.Provider value={{ user, setUser, loading }}>
+		<AuthContext.Provider value={{ user, setUser, loading, updateAuth }}>
 			{children}
 		</AuthContext.Provider>
 	)

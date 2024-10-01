@@ -129,16 +129,8 @@ const SignUp = () => {
 						{/* First Name */}
 						<View style={{ paddingBottom: 37 }}>
 							<TextField
-								label="First Name"
-								setText={text => updateState('first_name', text)}
-							/>
-						</View>
-
-						{/* Last Name */}
-						<View style={{ paddingBottom: 37 }}>
-							<TextField
-								label="Last Name"
-								setText={text => updateState('last_name', text)}
+								label="Name"
+								setText={text => updateState('name', text)}
 							/>
 						</View>
 

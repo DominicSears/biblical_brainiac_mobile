@@ -11,6 +11,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import useAuth, { AuthProvider } from '@/providers/authProvider';
 import { RootSiblingParent } from 'react-native-root-siblings';
 import Toast from 'react-native-toast-message';
+import { get } from '@/lib/helpers';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -21,23 +22,35 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  const [user, setUser] = useState<any>({});
+  const checkAuth = async (): Promise<boolean> => {
+    const token: string | null = await SecureStore.getItemAsync('token');
 
-  const checkAuth = async (): Promise<string | null> => {
-    return await SecureStore.getItemAsync('token');
+    if (token === null) {
+      return false
+    }
+
+    const { data, status } = await get('/user');
+
+    if (status !== 200) {
+      await SecureStore.deleteItemAsync('token')
+
+      return false
+    }
+
+    return true
   }
 
   useEffect(() => {
     if (loaded) {
       checkAuth().then((auth) => {
         if (auth) {
-          router.push('/(tabs)');
+          router.replace('/(tabs)');
         } else {
-          router.push('/auth');
+          router.replace('/auth');
         }
       })
         .catch((reason: any) => {
-          router.push('/auth');
+          router.replace('/auth');
         })
         .finally(() => {
           SplashScreen.hideAsync();
