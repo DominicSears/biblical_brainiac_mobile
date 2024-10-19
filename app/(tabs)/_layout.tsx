@@ -21,6 +21,8 @@ import HomeFilledIcon from '@/components/icons/HomeFilledIcon';
 import SearchIcon from '@/components/icons/SearchIcon';
 import SearchScreen from './search';
 import SearchFilledIcon from '@/components/icons/SearchFilledIcon';
+import StatsFilledIcon from '@/components/icons/StatsFilledIcon';
+import GradesFilledIcon from '@/components/icons/GradesFilledIcon';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -58,7 +60,7 @@ export default function TabLayout() {
         }}
       />
       <Tab.Screen
-        name="Searcg"
+        name="Search"
         component={SearchScreen}
         options={{
           tabBarIcon: ({ color, focused }) => (
@@ -91,7 +93,7 @@ export default function TabLayout() {
         component={StatsScreen}
         options={{
           tabBarIcon: ({ color, focused }) => (
-            <StatsIcon style={{ color: focused ? '#578BBE' : Colors.light.input }} />
+            focused ? <StatsFilledIcon style={{ color: focused ? '#578BBE' : Colors.light.input }} /> : <StatsIcon style={{ color: focused ? '#578BBE' : Colors.light.input }} />
           )
         }}
       />
@@ -100,7 +102,7 @@ export default function TabLayout() {
         component={GradeScreen}
         options={{
           tabBarIcon: ({ color, focused }) => (
-            <GradesIcon style={{ color: focused ? '#578BBE' : Colors.light.input }} />
+            focused ? <GradesFilledIcon style={{ color: focused ? '#578BBE' : Colors.light.input }} /> : <GradesIcon style={{ color: focused ? '#578BBE' : Colors.light.input }} />
           ),
         }}
       />

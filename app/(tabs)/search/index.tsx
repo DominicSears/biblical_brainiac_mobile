@@ -14,10 +14,6 @@ const SearchScreen = () => {
 	const insets = useSafeAreaInsets()
 	const colorScheme = useColorScheme() ?? 'light'
 
-	useDebounce(query, 500, (debounce: string) => {
-		searchUsers(encodeURI(debounce))
-	})
-
 	const searchUsers = async (search: string) => {
 		const { data, status } = await get(`/users/search?q=${search}`)
 
@@ -27,6 +23,8 @@ const SearchScreen = () => {
 			setUsers(null)
 		}
 	}
+
+	useDebounce(query, 500, searchUsers)
 
 	return (
 		<View style={{ marginTop: insets.top, marginHorizontal: 16 }}>

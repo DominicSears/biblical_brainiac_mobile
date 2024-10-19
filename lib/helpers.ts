@@ -9,7 +9,7 @@ export const get = async (url: string): Promise<{data: any, status: number}> => 
 		data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
 		status = res.status;
 	} catch (e: any) {
-		console.log('e:',e);
+		console.error('e:',e);
 		
 		data = e?.response?.data ?? {};
 		status = e?.response?.status ?? 500;
